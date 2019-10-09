@@ -1,16 +1,16 @@
-// SELECT CVS
+// Select Canvas
 const cvs = document.getElementById("bird");
 const ctx = cvs.getContext("2d");
 
-// GAME VARS AND CONSTS
+// Game let and const
 let frames = 0;
 const DEGREE = Math.PI/180;
 
-// LOAD SPRITE IMAGE
+// Load sprite image
 const sprite = new Image();
 sprite.src = "img/sprite.png";
 
-// LOAD SOUNDS
+// Load sounds
 const SCORE_S = new Audio();
 SCORE_S.src = "audio/sfx_point.wav";
 
@@ -26,7 +26,7 @@ SWOOSHING.src = "audio/sfx_swooshing.wav";
 const DIE = new Audio();
 DIE.src = "audio/sfx_die.wav";
 
-// GAME STATE
+// Game State Object
 const state = {
     current : 0,
     getReady : 0,
@@ -34,7 +34,7 @@ const state = {
     over : 2
 }
 
-// START BUTTON COORD
+// Toạ độ nút Start
 const startBtn = {
     x : 120,
     y : 263,
@@ -42,7 +42,7 @@ const startBtn = {
     h : 29
 }
 
-// CONTROL THE GAME
+// Control the game
 cvs.addEventListener("click", function(evt){
     switch(state.current){
         case state.getReady:
@@ -71,7 +71,7 @@ cvs.addEventListener("click", function(evt){
 });
 
 
-// BACKGROUND
+// Background Object
 const bg = {
     sX : 0,
     sY : 0,
@@ -88,7 +88,7 @@ const bg = {
     
 }
 
-// FOREGROUND
+// Foreground Object
 const fg = {
     sX: 276,
     sY: 0,
@@ -112,7 +112,7 @@ const fg = {
     }
 }
 
-// BIRD
+// Bird Object
 const bird = {
     animation : [
         {sX: 276, sY : 112},
@@ -150,15 +150,15 @@ const bird = {
     },
     
     update: function(){
-        // IF THE GAME STATE IS GET READY STATE, THE BIRD MUST FLAP SLOWLY
+        // Khi game ở trạng thái chuẩn bị, chú chim vỗ cánh chậm hơn
         this.period = state.current == state.getReady ? 10 : 5;
-        // WE INCREMENT THE FRAME BY 1, EACH PERIOD
+        // Tăng frame lên 1 mỗi period
         this.frame += frames%this.period == 0 ? 1 : 0;
-        // FRAME GOES FROM 0 To 4, THEN AGAIN TO 0
+        // Frame tăng từ 0 đến 4, sau đó quay trở lại 0
         this.frame = this.frame%this.animation.length;
         
         if(state.current == state.getReady){
-            this.y = 150; // RESET POSITION OF THE BIRD AFTER GAME OVER
+            this.y = 150; // Reset position of the bird after game over
             this.rotation = 0 * DEGREE;
         }else{
             this.speed += this.gravity;
@@ -172,7 +172,7 @@ const bird = {
                 }
             }
             
-            // IF THE SPEED IS GREATER THAN THE JUMP MEANS THE BIRD IS FALLING DOWN
+            // Nếu speed lớn hơn jump có nghĩa là chú chim đang rơi xuống
             if(this.speed >= this.jump){
                 this.rotation = 90 * DEGREE;
                 this.frame = 1;
@@ -187,7 +187,7 @@ const bird = {
     }
 }
 
-// GET READY MESSAGE
+// Get Ready message
 const getReady = {
     sX : 0,
     sY : 228,
@@ -204,7 +204,7 @@ const getReady = {
     
 }
 
-// GAME OVER MESSAGE
+// Game over message
 const gameOver = {
     sX : 175,
     sY : 228,
@@ -221,7 +221,7 @@ const gameOver = {
     
 }
 
-// PIPES
+// Pipes Object
 const pipes = {
     position : [],
     
@@ -269,7 +269,7 @@ const pipes = {
             
             let bottomPipeYPos = p.y + this.h + this.gap;
             
-            // COLLISION DETECTION
+            // Phát hiện va chạm
             // TOP PIPE
             if(bird.x + bird.radius > p.x && bird.x - bird.radius < p.x + this.w && bird.y + bird.radius > p.y && bird.y - bird.radius < p.y + this.h){
                 state.current = state.over;
@@ -281,10 +281,10 @@ const pipes = {
                 HIT.play();
             }
             
-            // MOVE THE PIPES TO THE LEFT
+            // Move the pipes to left
             p.x -= this.dx;
             
-            // if the pipes go beyond canvas, we delete them from the array
+            // if the pipes go beyond canvas, delete them from the array
             if(p.x + this.w <= 0){
                 this.position.shift();
                 score.value += 1;
@@ -301,7 +301,7 @@ const pipes = {
     
 }
 
-// SCORE
+// Score Object
 const score= {
     best : parseInt(localStorage.getItem("best")) || 0,
     value : 0,
@@ -332,7 +332,7 @@ const score= {
     }
 }
 
-// DRAW
+// Draw function
 function draw(){
     ctx.fillStyle = "#70c5ce";
     ctx.fillRect(0, 0, cvs.width, cvs.height);
@@ -346,14 +346,14 @@ function draw(){
     score.draw();
 }
 
-// UPDATE
+// Update function
 function update(){
     bird.update();
     fg.update();
     pipes.update();
 }
 
-// LOOP
+// Loop function
 function loop(){
     update();
     draw();
